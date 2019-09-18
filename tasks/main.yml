@@ -40,7 +40,7 @@
   mysql_db:
     state: dump
     name: "{{ db_name }}"
-    target: /tmp/{{ db_name }}-{{ansible_date_time.date}}.sql
+    target: /tmp/{{ db_name }}-{{ ansible_date_time.date }}.sql
     login_unix_socket: /var/run/mysqld/mysqld.sock
   ignore_errors: true
 
@@ -81,6 +81,7 @@
 - name: Retrieve mysql binary archive.
   become: yes
   shell: zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz > /tmp/create.sql
+  changed_when: false
 
 - name: Restore database
   mysql_db:
@@ -147,13 +148,9 @@
     name: "{{ item }}"
     enabled: yes
     masked: no
-  loop: ['zabbix-server', 'zabbix-agent']
+  loop: ['zabbix-server', 'zabbix-agent', 'apache2']
 
 - name: Enable zabbix server
   become: yes
   command: update-rc.d zabbix-server enable
-
-- name: Start apache server
-  service:
-    name: apache2
-    state: restarted
+  changed_when: false
