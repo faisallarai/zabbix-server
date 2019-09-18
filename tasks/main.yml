@@ -95,10 +95,8 @@
 
 - name: Copy zabbix server sql file
   become: no
-  copy:
-    content: "{{ role_path }}"/files/zabbix-server.sql 
-    dest: "./zabbix-server.sql"
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
+  copy: content="{{ role_path }}"/files/zabbix-server.sql dest="./zabbix-server.sql"
 
 - name: Copy zabbix server sql file to tmp folder
   become: no
